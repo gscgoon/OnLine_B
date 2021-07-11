@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.serviceEdu.mapper.EduCourseMapper">
+
+    <!-- 根据课程id查询要确认的信息 -->
+    <select id="getCoursePublishById" resultType="com.atguigu.serviceEdu.entity.vo.CoursePublishVo">
+        select ece.title,
+            ece.cover,
+            ece.lesson_num as lessonNum,
+            convert(ece.price ,decimal(10,2)) as price,
+            su1.title as subjectLevelOne,
+            su2.title as subjectLevelTwo,
+            etr.`name` as teacherName
+        from edu_course ece
+        left join edu_teacher etr on ece.teacher_id = etr.id
+        left join edu_subject su1 on ece.subject_parent_id = su1.id
+        left join edu_subject su2 on ece.subject_id = su2.id
+        where ece.id = #{id}
+    </select>
+
+    <!-- 根据课程id查询课程详情需要显示的信息 -->
+    <select id="getCourseDetailByCourseId" resultType="com.atguigu.serviceEdu.entity.webVo.CourseDetailWebVo">
+      select
+            ece.id,
+            ece.title,
+            convert(ece.price ,decimal(10,2)) as price,
+            ece.lesson_num as lessonNum,
+            ece.cover,
+            ece.buy_count as buyCount,
+            ece.view_count as viewCount,
+            ecd.description,
+            etr.id as teacherId,
+            etr.name as teacherName,
+            etr.intro,
+            etr.avatar,
+            su1.id as subjectLevelOneId,
+            su1.title as subjectLevelOne,
+            su2.id as subjectLevelTwoId,
+            su2.title as subjectLevelTwo
+        from edu_course ece
+        left join edu_teacher etr on ece.teacher_id = etr.id
+        left join edu_course_description ecd on ece.id = ecd.id
+        left join edu_subject su1 on ece.subject_parent_id = su1.id
+        left join edu_subject su2 on ece.subject_id = su2.id
+        where ece.id = #{courseId}
+    </select>
+</mapper>
